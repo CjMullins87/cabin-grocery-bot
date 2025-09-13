@@ -26,9 +26,10 @@ async def order(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Some handling here to make sure that the order is reasonably shaped (EG please
     # do not send me the script of THE ROOM as a grocery item)
     if not len(order["txt"]) <= 85:
-        await update.message.reply_text("Please keep it under 85 characters.")
+        await update.message.reply_text("Please keep your request under 85 characters.")
     else:
         await update.message.reply_text(f"'{order['txt']}' successfully requested!")
+        # TEMP debugging info TODO remove later
         await update.message.reply_text(
             f"```\n{str(order)}```", parse_mode="MarkdownV2"
         )
@@ -36,7 +37,7 @@ async def order(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 def bot_core_setup() -> None:
     """Set up the bot core components."""
-    # Create the Application and pass it your bot's token.
+    # Create the Application and pass it the token.
     application = Application.builder().token(get_token()).build()
 
     # on different commands - answer in Telegram
