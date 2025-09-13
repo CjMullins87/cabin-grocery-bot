@@ -2,7 +2,7 @@
 
 
 def main() -> None:
-    """Sets up the bot."""
+    """Core loop."""
     pass
 
 

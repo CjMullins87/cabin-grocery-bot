@@ -1,0 +1,3 @@
+"""Config variables"""
+
+TOKEN = ""

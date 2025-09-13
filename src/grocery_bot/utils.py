@@ -1,8 +1,37 @@
 """Helper functions/handlers."""
 
+import os
 import re
 from datetime import datetime
 from telegram import Update
+import logging
+
+from grocery_bot import ROOT_DIR
+from grocery_bot.config import TOKEN
+
+logger = logging.getLogger(__name__)
+
+
+def get_token() -> str:
+    """Feetches the bot token"""
+
+    # If a token is provided in the config, use that
+    if TOKEN:
+        logger.debug("Retrieving token from config")
+        return TOKEN
+
+    # Othwertise, look for it in the environment
+    env_token = os.getenv("GROCERY_BOT_TOKEN")
+    if env_token:
+        logger.debug("Retrieving token from environment variable")
+        return env_token
+
+    # Finally, we can check our .gitignored sandbox directory
+    if os.path.exists(os.path.join(ROOT_DIR / "sandbox" / "token.txt")):
+        logger.debug("Retrieving token from sandbox/token.txt")
+        with open(os.path.join(ROOT_DIR / "sandbox" / "token.txt"), "r") as t:
+            token = t.read().strip()
+            return token
 
 
 def extract_text(text: str) -> str:
