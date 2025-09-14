@@ -4,6 +4,7 @@ import os
 import re
 from datetime import datetime
 import logging
+from typing import Union
 
 from telegram import Update
 
@@ -13,7 +14,7 @@ from grocery_bot.config import TOKEN
 logger = logging.getLogger(__name__)
 
 
-def get_token() -> str:
+def get_token() -> Union[str, None]:
     """Feetches the bot token"""
 
     # If a token is provided in the config, use that

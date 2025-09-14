@@ -46,7 +46,7 @@ async def order(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 def bot_core_setup() -> None:
     """Set up the bot core components."""
 
-    # Create the Application and pass it the token.
+    # Fetch the token the kickoff the bot
     token = get_token()
     logger.debug("Kicking off bot:")
     application = Application.builder().token(token).build()
