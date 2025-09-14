@@ -1,5 +1,6 @@
 """Telegram bot core components."""
 
+from ast import parse
 import logging
 
 from telegram import Update
@@ -9,14 +10,21 @@ from telegram.ext import (
     ContextTypes,
 )
 
-from grocery_bot.utils import *
+from grocery_bot.utils import get_order_dict, get_token
+
+logger = logging.getLogger(__name__)
 
 
 # Define command handlers. Looks like these should always expect an Update and
 # Context argument
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
-    await update.message.reply_text("That's gay!")
+    help_txt = (
+        "Right now, I know these commands:\n\n"
+        + "`/help`     This displays the text you're reading now\n"
+        + "`/order`    Use this command to request something"
+    )
+    await update.message.reply_text(help_txt, parse_mode="MarkdownV2")
 
 
 async def order(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -37,8 +45,11 @@ async def order(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 def bot_core_setup() -> None:
     """Set up the bot core components."""
+
     # Create the Application and pass it the token.
-    application = Application.builder().token(get_token()).build()
+    token = get_token()
+    logger.debug("Kicking off bot:")
+    application = Application.builder().token(token).build()
 
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler("help", help_command))
