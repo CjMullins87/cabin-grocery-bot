@@ -1,0 +1,25 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+// Target table for storing orders
+// NOTE to avoid constraints from int/bigint, the order id
+// is saved as a varchar
+Table order {
+  id varchar [primary key]
+  createddate datetime
+  username varchar
+  userid bigint
+  txt varchar [note: "order plaintext"]
+  claimed_by varchar
+  claimeddate varchar
+}
+
+// Top level table that just keeps data about versioning
+// Idea here is that if there's a new Major version detected
+// at startup, the db will scrap an re-init from scratch
+Table dbinfo {
+  major int
+  minor int
+  patch int
+  createddate datetime
+}
