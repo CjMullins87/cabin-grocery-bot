@@ -13,6 +13,5 @@ A simple telegram bot application for Cabin's adhoc grocery needs.
 
 ### Technical:
 
-* Async read/writes from/to a local SQLite DB
-* Caching in Pandas for quick read/writes
+* SQLite DB
 * How the fuck does a receipt printer work man

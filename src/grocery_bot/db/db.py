@@ -3,6 +3,17 @@
 import os
 from os.path import dirname
 from pathlib import Path
-import sqlite3
+from threading import RLock
+import aiosqlite
 
 DB_PATH = Path(os.path.abspath(dirname(__file__))) / "sqlite.db"
+
+
+class DBManager:
+    """Database manager for the bot."""
+
+    def __init__(self, db_path: Path = DB_PATH) -> None:
+        """Initialize the manager."""
+
+        self.db_path = db_path
+        self._lock = RLock()

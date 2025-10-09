@@ -11,7 +11,7 @@ Table order {
   userid bigint
   txt varchar [note: "order plaintext"]
   claimed_by varchar
-  claimeddate varchar
+  claimeddate datetime
 }
 
 // Top level table that just keeps data about versioning
