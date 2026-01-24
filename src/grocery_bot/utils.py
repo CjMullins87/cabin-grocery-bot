@@ -22,7 +22,7 @@ def get_token() -> Union[str, None]:
         logger.info("Retrieving token from config")
         return TOKEN
 
-    # Othwertise, look for it in the environment
+    # Otherwise, look for it in the environment
     env_token = os.getenv("GROCERY_BOT_TOKEN")
     if env_token:
         logger.info("Retrieving token from environment variable")

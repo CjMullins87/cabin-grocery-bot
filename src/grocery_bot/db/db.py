@@ -4,7 +4,6 @@ import os
 from os.path import dirname
 from pathlib import Path
 from threading import RLock
-import aiosqlite
 
 DB_PATH = Path(os.path.abspath(dirname(__file__))) / "sqlite.db"
 

@@ -7,9 +7,8 @@ A simple telegram bot application for Cabin's adhoc grocery needs.
 ### Behavioral:
 
 * Someone requests a grocery item by calling to `/order`
-* Someone can pull everything currently in the queue by calling `/print`
-* This command prints the list to a receipt printer and/or sends it in a DM
-* Once an item is printed, it exits the queue
+* Some way to inspect and cancel previously requested items
+* Some way to serve a list of items to pick from the grocery store
 
 ### Technical:
 
