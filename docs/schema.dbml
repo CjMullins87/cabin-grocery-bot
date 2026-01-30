@@ -6,12 +6,12 @@
 // is saved as a varchar
 Table order {
   id varchar [primary key]
-  createddate datetime
+  createddate str
   username varchar
   userid bigint
   txt varchar [note: "order plaintext"]
   claimed_by varchar
-  claimeddate datetime
+  claimeddate str
 }
 
 // Top level table that just keeps data about versioning
@@ -22,4 +22,9 @@ Table dbinfo {
   minor int
   patch int
   createddate datetime
+}
+
+// Top level table that determins admin permissions
+Table admin {
+  userid str
 }
