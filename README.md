@@ -14,3 +14,4 @@ A simple telegram bot application for Cabin's adhoc grocery needs.
 
 * SQLite DB
 * How the fuck does a receipt printer work man
+* SQLAlchemy ORM
