@@ -23,7 +23,7 @@ class Order(Base):
     userid: Mapped[int]
     txt: Mapped[str] = mapped_column(String(85))  # Arbitrary n characters
     claimed_by: Mapped[Optional[str]]
-    claimeddate: Mapped[str] = mapped_column(String(23))
+    claimeddate: Mapped[Optional[str]] = mapped_column(String(23))
 
     def __repr__(self) -> str:
         return (
@@ -33,25 +33,6 @@ class Order(Base):
             f", userid={self.userid!r}"
             f", claimed_by={self.claimed_by!r}"
             f", claimeddate={self.claimeddate!r})"
-        )
-
-
-class DBInfo(Base):
-    """DBInfo table"""
-
-    __tablename__ = "dbinfo"
-
-    major: Mapped[int] = mapped_column(primary_key=True)
-    minor: Mapped[int]
-    patch: Mapped[int]
-    createddate: Mapped[str] = String(23)
-
-    def __repr__(self) -> str:
-        return (
-            f"DBInfo(major={self.major!r}"
-            f", minor={self.minor!r}"
-            f", patch={self.patch!r}"
-            f", createddate={self.createddate!r}"
         )
 
 

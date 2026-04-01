@@ -65,8 +65,7 @@ def get_order_dict(update: Update) -> dict:
     msg = update.message
     container["txt"] = extract_text(msg.text)
 
-    # By combining the user ID and message ID, we can get a unique order ID
     # This should be unique, since TG message IDs are unique per chat
-    container["orderid"] = str(user.id) + str(msg.message_id)
+    container["id"] = str(msg.chat_id) + str(msg.message_id)
 
     return container
