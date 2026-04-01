@@ -18,12 +18,12 @@ class Order(Base):
     __tablename__ = "order"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    createddate: Mapped[str] = mapped_column(String(23))
+    createddate: Mapped[str] = mapped_column(String(26))
     username: Mapped[str]
     userid: Mapped[int]
     txt: Mapped[str] = mapped_column(String(85))  # Arbitrary n characters
     claimed_by: Mapped[Optional[str]]
-    claimeddate: Mapped[Optional[str]] = mapped_column(String(23))
+    claimeddate: Mapped[Optional[str]] = mapped_column(String(26))
 
     def __repr__(self) -> str:
         return (

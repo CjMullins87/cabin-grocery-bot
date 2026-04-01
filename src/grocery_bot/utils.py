@@ -52,7 +52,7 @@ def get_order_dict(update: Update) -> dict:
     container = {}
 
     # Just kick off with a createddate
-    container["createddate"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    container["createddate"] = datetime.now().isoformat()
 
     # The User object looks like it's a dataclass, so I can probably access
     # its attributes directly
