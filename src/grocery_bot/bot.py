@@ -10,6 +10,8 @@ from telegram.ext import (
     ContextTypes,
 )
 
+from grocery_bot.db.manager import DBManager
+from grocery_bot.db.schema import Order, Admin
 from grocery_bot.utils import get_order_dict, get_token
 
 logger = logging.getLogger(__name__)
@@ -29,27 +31,56 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 async def order(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Gets the grocery item request and preps it for the cache and db."""
-    order = get_order_dict(update)
+
+    # Fetch the db manager from cache
+    db_manager: DBManager = context.bot_data["db_manager"]
+
+    # Prep the order dict
+    order_dict = get_order_dict(update)
 
     # Some handling here to make sure that the order is reasonably shaped (EG please
     # do not send me the script of THE ROOM as a grocery item)
-    if not len(order["txt"]) <= 85:
+    if not len(order_dict["txt"]) <= 85:
         await update.message.reply_text("Please keep your request under 85 characters.")
+        return
     else:
-        await update.message.reply_text(f"'{order['txt']}' successfully requested!")
-        # TEMP debugging info TODO remove later
-        await update.message.reply_text(
-            f"```\n{str(order)}```", parse_mode="MarkdownV2"
-        )
+        try:
+            # Write the data to the DB
+            new_order = Order(
+                id=order_dict["id"],
+                createddate=order_dict["createddate"],
+                username=order_dict["username"],
+                userid=order_dict["userid"],
+                txt=order_dict["txt"],
+            )
+            with db_manager.get_session() as session:
+                session.add(new_order)
+
+            # Send a confirmation
+            await update.message.reply_text(
+                f"'{order_dict['txt']}' successfully requested!"
+            )
+            return
+
+        except Exception as e:
+            logger.error("Failed to write to DB: %s", e)
+            await update.message.reply_text(
+                "Sorry, something went wrong saving your order"
+            )
+            return
 
 
 def bot_core_setup() -> None:
     """Set up the bot core components."""
+    # DB setup
+    db_manager = DBManager(demo=True)
+    db_manager.connect()
 
-    # Fetch the token the kickoff the bot
-    token = get_token()
+    # Kick off the bot by fetching the token and caching the db_manager
+    # in bot_data
     logger.debug("Kicking off bot:")
-    application = Application.builder().token(token).build()
+    application = Application.builder().token(get_token()).build()
+    application.bot_data["db_manager"] = db_manager
 
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler("help", help_command))

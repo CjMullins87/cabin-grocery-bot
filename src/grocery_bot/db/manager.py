@@ -3,7 +3,7 @@
 import logging
 from contextlib import contextmanager
 from sqlalchemy import Engine, create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 
 from grocery_bot.config import DB_PATH
 from grocery_bot.db.schema import Base
@@ -30,7 +30,7 @@ class DBManager:
             self.connect_args = connect_args
 
     @contextmanager
-    def get_session(self) -> None:
+    def get_session(self) -> Session:
         """Retrieve a session object and define behaviors for the transaction"""
 
         # Use sessionmaker to make sure we're always calling directly to

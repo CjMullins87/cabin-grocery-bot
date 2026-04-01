@@ -66,6 +66,6 @@ def get_order_dict(update: Update) -> dict:
     container["txt"] = extract_text(msg.text)
 
     # This should be unique, since TG message IDs are unique per chat
-    container["id"] = str(msg.chat_id) + str(msg.message_id)
+    container["id"] = int(str(msg.chat_id) + str(msg.message_id))
 
     return container
