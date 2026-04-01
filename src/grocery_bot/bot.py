@@ -57,9 +57,12 @@ async def order(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 session.add(new_order)
 
             # Send a confirmation
-            await update.message.reply_text(
-                f"'{order_dict['txt']}' successfully requested!"
+            reply_text = (
+                "Successfully requested:\n"
+                f"```Order\nOrder #: {order_dict['id']}\n'{order_dict['txt']}'```"
             )
+
+            await update.message.reply_text(reply_text, parse_mode="MarkdownV2")
             return
 
         except Exception as e:
