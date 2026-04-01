@@ -61,7 +61,7 @@ class DBManager:
             if self.demo:
                 # If we're running a demo, we'll load the database in RAM only
                 logger.debug("Demo mode, DB in RAM only")
-                self.engine(
+                self.engine = create_engine(
                     "sqlite+pysqlite:///:memory:",
                     connect_args=self.connect_args,
                     echo=True,
