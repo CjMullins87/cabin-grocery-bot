@@ -24,6 +24,7 @@ class Order(Base):
     txt: Mapped[str] = mapped_column(String(85))  # Arbitrary n characters
     claimed_by: Mapped[Optional[str]]
     claimeddate: Mapped[Optional[str]] = mapped_column(String(26))
+    canceleddate: Mapped[Optional[str]] = mapped_column(String(26))
 
     def __repr__(self) -> str:
         return (
@@ -33,6 +34,7 @@ class Order(Base):
             f", userid={self.userid!r}"
             f", claimed_by={self.claimed_by!r}"
             f", claimeddate={self.claimeddate!r})"
+            f", canceleddate={self.canceleddate!r}"
         )
 
 

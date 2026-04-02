@@ -43,10 +43,10 @@ class DBManager:
             yield session
             session.commit()
 
-        # If something goes wrong, raise and rollback
-        except Exception:
+        # If something goes wrong, log and rollback
+        except Exception as e:
+            logger.error("Something went wrong: %s", e)
             session.rollback()
-            raise
 
         # Finally close
         finally:
