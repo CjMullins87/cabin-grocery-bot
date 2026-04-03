@@ -1,7 +1,7 @@
 """Main program loop."""
 
 import logging
-from grocery_bot.bot import bot_core_setup
+from grocery_bot.bot import bot_setup
 
 
 def main() -> None:
@@ -17,7 +17,7 @@ def main() -> None:
     # floods of Requests
     logging.getLogger("httpx").setLevel(logging.WARNING)
 
-    bot_core_setup()
+    bot_setup(is_demo=True)
     return
 
 

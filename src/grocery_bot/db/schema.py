@@ -25,6 +25,8 @@ class Order(Base):
     claimed_by: Mapped[Optional[str]]
     claimeddate: Mapped[Optional[str]] = mapped_column(String(26))
     canceleddate: Mapped[Optional[str]] = mapped_column(String(26))
+    canceledbyname: Mapped[Optional[str]]  # userName, str
+    canceledbyid: Mapped[Optional[int]]
 
     def __repr__(self) -> str:
         return (
@@ -35,6 +37,8 @@ class Order(Base):
             f", claimed_by={self.claimed_by!r}"
             f", claimeddate={self.claimeddate!r})"
             f", canceleddate={self.canceleddate!r}"
+            f", canceledbyname={self.canceledbyname!r}"
+            f", canceledbyid={self.canceledbyid!r}"
         )
 
 
@@ -44,6 +48,7 @@ class Admin(Base):
     __tablename__ = "admin"
 
     userid: Mapped[int] = mapped_column(primary_key=True)
+    isowner: Mapped[bool] = mapped_column(default=False)
 
     def __repr__(self) -> str:
         return f"Admin(userid={self.userid!r})"

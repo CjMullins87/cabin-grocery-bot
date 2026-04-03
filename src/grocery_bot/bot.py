@@ -1,6 +1,7 @@
 """Telegram bot core components."""
 
 from ast import parse
+from email import message
 import logging
 
 from telegram import Update
@@ -9,10 +10,12 @@ from telegram.ext import (
     CommandHandler,
     ContextTypes,
 )
+from tomlkit import date
+from zmq import Context
 
 from grocery_bot.db.manager import DBManager
 from grocery_bot.db.schema import Order, Admin
-from grocery_bot.utils import get_order_dict, get_token
+from grocery_bot.utils import *
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +32,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     await update.message.reply_text(help_txt, parse_mode="MarkdownV2")
 
 
-async def order(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def order_new(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Gets the grocery item request and preps it for the cache and db."""
 
     # Fetch the db manager from cache
@@ -73,10 +76,68 @@ async def order(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             return
 
 
-def bot_core_setup() -> None:
+async def cancel_order(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+
+    # Fetch the db manager
+    db_manager = context.bot_data["db_manager"]
+
+    # Enforce a standard here -- people should /reply to their order confirmation
+    # This should be easier for our users, and look cooler, honestly, from an
+    # interface perspective
+    reply = update.message.reply_to_message
+    if not reply or not reply.from_user.id == context.bot.id:
+        logger.debug("Command not valid:")
+        logger.debug("is_reply: %s", bool(reply))
+        logger.debug("from_user.id: %s", context.bot.id)
+        await update.message.reply_text(
+            "To cancel a request, please reply to your confirmation with the `/cancel` command",
+            parse_mode="MarkdownV2",
+        )
+        return
+
+    # If the message is a reply, we should attempt to get info out of it
+    logger.debug("Message is valid reply")
+    reply_txt = update.message.reply_to_message.text
+    logger.debug("Reply text:\n%s", reply_txt)
+
+    # Try to extract an orderID and execute the db update
+    try:
+        orderid = extract_orderid_from_text(reply_txt)
+        userid = update.effective_user.id
+
+        # Basically, only allow execution if the requester is an admin or the
+        # request owner
+        if is_admin(userid, db_manager) or is_request_owner(
+            userid, orderid, db_manager
+        ):
+            logger.debug("Permissions OK")
+            with db_manager.get_session() as session:
+                _order: Order = session.get(Order, orderid)
+                if _order:
+                    logger.debug("Cancelling order")
+                    _order.canceleddate = datetime.now().isoformat()
+                    _order.canceledbyid = userid
+                    _order.canceledbyname = update.effective_user.username
+                    await update.message.reply_text("Successfully canceled")
+                    return
+
+                logger.warning("Order not found")
+        else:
+            logger.warning("Permissions NOT OK")
+            await update.message.reply_text(
+                "Sorry, you don't have the right permissions"
+            )
+            return
+    except Exception as e:
+        logger.error(e)
+        await update.message.reply_text("Sorry, I wasn't able to cancel this request")
+        return
+
+
+def bot_setup(is_demo: bool = False) -> None:
     """Set up the bot core components."""
     # DB setup
-    db_manager = DBManager(demo=True)
+    db_manager = DBManager(demo=is_demo)
     db_manager.connect()
 
     # Kick off the bot by fetching the token and caching the db_manager
@@ -87,7 +148,8 @@ def bot_core_setup() -> None:
 
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler("help", help_command))
-    application.add_handler(CommandHandler("order", order))
+    application.add_handler(CommandHandler("order", order_new))
+    application.add_handler(CommandHandler("cancel", cancel_order))
 
     # Run the bot until the user presses Ctrl-C
     application.run_polling()
