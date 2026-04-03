@@ -27,7 +27,8 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     help_txt = (
         "Right now, I know these commands:\n\n"
         + "`/help`     This displays the text you're reading now\n"
-        + "`/order`    Use this command to request something"
+        + "`/order`    Use this command to request something\n"
+        + "`/cancel`   Cancel a request that you placed"
     )
     await update.message.reply_text(help_txt, parse_mode="MarkdownV2")
 
