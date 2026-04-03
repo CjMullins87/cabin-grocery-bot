@@ -78,6 +78,7 @@ async def order_new(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def cancel_order(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Allow users to cancel requests if they are the request owner or an Admin"""
 
     # Fetch the db manager
     db_manager = context.bot_data["db_manager"]
