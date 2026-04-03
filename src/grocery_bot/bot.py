@@ -1,7 +1,5 @@
 """Telegram bot core components."""
 
-from ast import parse
-from email import message
 import logging
 
 from telegram import Update
@@ -10,11 +8,9 @@ from telegram.ext import (
     CommandHandler,
     ContextTypes,
 )
-from tomlkit import date
-from zmq import Context
 
 from grocery_bot.db.manager import DBManager
-from grocery_bot.db.schema import Order, Admin
+from grocery_bot.db.schema import Order
 from grocery_bot.utils import *
 
 logger = logging.getLogger(__name__)

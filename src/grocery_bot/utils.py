@@ -7,10 +7,8 @@ from datetime import datetime
 import logging
 from typing import Union
 
-from sqlalchemy.util import decorator
 from telegram import Update
 from telegram.ext import ContextTypes
-from zmq import Context
 
 from grocery_bot import ROOT_DIR
 from grocery_bot.config import TOKEN
