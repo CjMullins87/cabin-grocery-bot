@@ -1,6 +1,7 @@
 """Telegram bot core components."""
 
 import logging
+import random
 
 from telegram import Update
 from telegram.ext import (
@@ -9,8 +10,10 @@ from telegram.ext import (
     ContextTypes,
 )
 
+from grocery_bot import ghimno
 from grocery_bot.db.manager import DBManager
 from grocery_bot.db.schema import Order
+from grocery_bot.ghimno import PHRASES
 from grocery_bot.utils import *
 
 logger = logging.getLogger(__name__)
@@ -132,6 +135,19 @@ async def cancel_order(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         return
 
 
+async def ghimno_phrase_picker(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> None:
+    """Randomly picks a Ghimno phrase.
+
+    Args:
+        update (Update): _description_
+        context (ContextTypes.DEFAULT_TYPE): _description_
+    """
+    output = random.choice(PHRASES)
+    await update.message.reply_text(output)
+
+
 def bot_setup(is_demo: bool = False) -> None:
     """Set up the bot core components."""
     # DB setup
@@ -148,6 +164,7 @@ def bot_setup(is_demo: bool = False) -> None:
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("order", order_new))
     application.add_handler(CommandHandler("cancel", cancel_order))
+    application.add_handler(CommandHandler("ghimno", ghimno_phrase_picker))
 
     # Run the bot until the user presses Ctrl-C
     application.run_polling()
